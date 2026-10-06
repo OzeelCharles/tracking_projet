@@ -18,6 +18,8 @@ logs/
 *.bak
 
 # --- Environnement et Secrets ---
+*.mp4
+*.avi
 venv.txt
 .env
 .env.local
