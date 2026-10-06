@@ -1,0 +1,24 @@
+﻿# --- Windows ---
+Thumbs.db
+desktop.ini
+.BIN/
+*.lnk
+
+# --- VS Code ---
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+*.code-workspace
+
+# --- Fichiers temporaires et Logs ---
+*.log
+logs/
+*.tmp
+*.bak
+
+# --- Environnement et Secrets ---
+venv.txt
+.env
+.env.local
+.env.*.local

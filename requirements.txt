@@ -1,0 +1,22 @@
+scipy
+pandas
+numpy
+ipykernel
+matplotlib
+opencv-python
+python-dotenv
+scikit-learn
+scikit-image
+ipywidgets
+streamlink
+yt_dlp
+kagglehub
+pytest
+
+# Import CUDA (Correction de l'URL)
+--extra-index-url https://download.pytorch.org/whl/cu132
+torch
+torchvision
+torchaudio
+face_recognition
+ultralytics
