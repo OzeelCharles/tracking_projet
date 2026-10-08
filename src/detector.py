@@ -15,14 +15,13 @@ class MotionDetector:
 
     def detect(self, frame: np.ndarray) -> list[dict]:
         """
-        Retourne une liste de dictionnaires contenant bbox et centroid des objets détectés.
+        Retourne une liste de dictionnaires contenant bbox et centroid des objets détectés
         """
         frame_gray = to_grayscale(frame)
         diff = get_background_difference(frame_gray, self.bg_gray)
         thresh = thresh_frame(diff)
         morph = morpho_frame(thresh)
 
-        # On utilise connectedComponentsWithStats (plus moderne que findContours pour avoir les centroids direct)
         nlabels, _, stats, centroids = cv2.connectedComponentsWithStats(morph)
 
         detections = []
