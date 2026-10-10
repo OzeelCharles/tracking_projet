@@ -16,28 +16,28 @@ def to_grayscale(frame: np.ndarray) -> np.ndarray:
 
 
 def get_background_difference(
-    frame_gray: np.ndarray, bg_gray: np.ndarray, blur_size: int = 15
+    frame_gray: np.ndarray, bg_gray: np.ndarray, blur_size: int = 7
 ) -> np.ndarray:
     """Applique un flou et retourne la différence absolue avec le fond."""
-    f_blur = cv2.blur(frame_gray, (blur_size, blur_size))
-    bg_blur = cv2.blur(bg_gray, (blur_size, blur_size))
+    f_blur = cv2.GaussianBlur(frame_gray, (blur_size, blur_size), 0)
+    bg_blur = cv2.GaussianBlur(bg_gray, (blur_size, blur_size), 0)
     return cv2.absdiff(f_blur, bg_blur)
 
 
-def thresh_frame(frame, lvl=25):
+def thresh_frame(frame, lvl: int = 30):
     """_summary_
 
     Args:
         frame (_type_): _description_
         lvl (int, optional): _description_. Defaults to 40.
     """
-    thresh = np.zeros_like(frame, dtype=np.uint8)
-    thresh[frame > lvl] = 255
+    _, thresh = cv2.threshold(frame, lvl, 255, cv2.THRESH_BINARY)
     return thresh
 
 
-def morpho_frame(frame, k1=(40, 40), k2=(20, 20)):
-    kernel1 = np.ones(k1, dtype=np.uint8)
-    dilated = cv2.dilate(frame, kernel1)
-    kernel2 = np.ones(k2, dtype=np.uint8)
-    return cv2.erode(dilated, kernel2)
+def morpho_frame(frame, k_erode: int = 3, k_dilate: int = 11 ) -> np.ndarray:
+    kernel_erode = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k_erode, k_erode))
+    kernel_dilate = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k_dilate, k_dilate))
+    eroded = cv2.erode(frame, kernel_erode, iterations=1)
+    dilated = cv2.dilate(eroded, kernel_dilate, iterations=2)
+    return dilated

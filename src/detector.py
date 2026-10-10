@@ -39,3 +39,6 @@ class MotionDetector:
                     }
                 )
         return detections
+
+    def update_bg(self, new_bg_frame: np.ndarray):
+        self.bg_gray = to_grayscale(new_bg_frame)

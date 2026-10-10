@@ -1,4 +1,3 @@
-# src/main.py
 import cv2
 import os
 import glob
@@ -59,6 +58,18 @@ def main():
         print("Impossible de générer le fond.")
         return
 
+    h, w = bg_frame.shape[:2]
+
+    roi_mask = np.zeros((h,w), dtype=np.uint8)
+
+    pts_roi = np.array([ROI_VERTICES], dtype=np.int32)
+
+    cv2.fillPoly(roi_mask, pts_roi, 255)
+
+    bg_frame = cv2.bitwise_and(bg_frame, bg_frame, mask=roi_mask)
+
+    bg_frame_float = np.float32(bg_frame)
+
     detector = MotionDetector(background_frame=bg_frame, min_area=MIN_AREA_CONTOUR)
     tracker = CentroidTracker(
         max_distance=MAX_DISTANCE, max_disappeared=MAX_DISAPPEARED
@@ -73,7 +84,14 @@ def main():
             print("Fin du flux vidéo")
             break
 
-        detections = detector.detect(frame)
+        frame_masked = cv2.bitwise_and(frame, frame, mask=roi_mask)
+
+        cv2.accumulateWeighted(frame_masked, bg_frame_float, LR)
+
+        current_bg = cv2.convertScaleAbs(bg_frame_float)
+        detector.update_bg(current_bg)
+
+        detections = detector.detect(frame_masked)
         tracked_objects = tracker.update(detections)
 
         for obj_id, centroid in tracked_objects.items():
